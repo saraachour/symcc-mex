@@ -345,6 +345,12 @@ void Symbolizer::handleIntrinsicCall(CallBase &I) {
   }
 }
 
+bool Symbolizer::handleRuntimeAPICall(CallInst &I) {
+  std::string func_name = I.getName().str();
+  return false;
+
+}
+
 void Symbolizer::handleInlineAssembly(CallInst &I) {
   if (I.getType()->isVoidTy()) {
     errs() << "Warning: skipping over inline assembly " << I << '\n';
@@ -503,6 +509,9 @@ void Symbolizer::visitIndirectBrInst(IndirectBrInst &I) {
 void Symbolizer::visitCallInst(CallInst &I) {
   if (I.isInlineAsm())
     handleInlineAssembly(I);
+  else if(handleRuntimeAPICall(I)){
+    return;
+  }
   else
     handleFunctionCall(I, I.getNextNode());
 }

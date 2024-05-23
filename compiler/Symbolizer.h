@@ -94,8 +94,10 @@ public:
   /// The resulting code is much longer but avoids solver calls for all
   /// operations without symbolic data.
   void shortCircuitExpressionUses();
+  
 
   void handleIntrinsicCall(llvm::CallBase &I);
+  bool handleRuntimeAPICall(llvm::CallInst&I);
   void handleInlineAssembly(llvm::CallInst &I);
   void handleFunctionCall(llvm::CallBase &I, llvm::Instruction *returnPoint);
 
