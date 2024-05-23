@@ -34,9 +34,9 @@ RUN pip3 install lit
 WORKDIR /
 
 # Build AFL.
-RUN git clone -b v2.56b https://github.com/google/AFL.git afl \
-    && cd afl \
-    && make
+RUN git clone -b v2.56b https://github.com/google/AFL.git afl 
+  
+RUN cd afl && AFL_NO_X86=1 make
 
 # This is passed along to symcc and qsym backend
 # Version 15 is buggy  https://github.com/eurecom-s3/symcc/issues/164
@@ -127,7 +127,7 @@ RUN apt-get update \
     && useradd -m -s /bin/bash ubuntu \
     && echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
 
-arg LLVM_VERSION=15
+arg LLVM_VERSION=12
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -153,5 +153,8 @@ ENV SYMCC_LIBCXX_PATH=/libcxx_symcc_install
 USER ubuntu
 WORKDIR /home/ubuntu
 COPY --chown=ubuntu:ubuntu sample.cpp /home/ubuntu/
-
 RUN mkdir /tmp/output
+
+COPY cacti cacti
+WORKDIR /home/ubuntu/cacti
+RUN sym++ *.cc -o ../symcc_cacti
